@@ -1,0 +1,13 @@
+{
+  "name": "Meta-bus",
+  "version": "1.0.0",
+  "main": "server/index.js",
+  "repository": "https://github.com/kimdongwoo0930/Meta-bus.git",
+  "author": "dongwoo <kimdongwoo0930@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20",
+    "socket.io": "^4.6.0"
+  }
+}
