@@ -9,12 +9,19 @@ export default class Game extends Phaser.Scene {
     socket
     otherPlayers= {}
 
+    LOCAL_DOMAINS = ["localhost","192.168.0.140",""]
+
     constructor() {
         super("Game");
     }
 
+
+
     preload() {
-        this.socket = io("localhost:3000");
+       if(this.LOCAL_DOMAINS.includes(window.location.hostname)){
+           this.socket = io("192.168.0.140:3000");
+       }else{
+       }
         this.cursors = this.input.keyboard.createCursorKeys();
     }
 
