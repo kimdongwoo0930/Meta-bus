@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { createCharacterAnims } from "../anims/CharacterAnims";
 import { io, Socket } from "socket.io-client";
+import Web from "../service/Web";
 
 
 export default class Game extends Phaser.Scene {
@@ -10,6 +11,8 @@ export default class Game extends Phaser.Scene {
     otherPlayers= {}
 
     LOCAL_DOMAINS = ["localhost","192.168.0.140",""]
+
+    WebRtc
 
     constructor() {
         super("Game");
@@ -26,6 +29,7 @@ export default class Game extends Phaser.Scene {
     }
 
     create() {
+        this.WebRtc = new Web("123")
         createCharacterAnims(this.anims);
 
         this.socket.on("connects", ({ otherPlayer }) => {

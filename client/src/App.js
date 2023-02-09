@@ -3,24 +3,14 @@ import "./App.css";
 import styled from "styled-components";
 import Peer from "peerjs";
 
+import Videos from "./components/Videos"
+import SelectRoom from "./components/SelectRoom";
+
 const Backdrop = styled.div`
   position: absolute;
   height: 100%;
   width: 100%;
 `;
-const Video = styled.video`
-  flex : 1;
-  width: 200px;
-  height: 150px;
-  border-radius: 15px;
-  padding : 10px 10px;
-`
-
-const VideoDiv = styled.div`
-  width: 100%;
-  height: 150px;
-  background-color: black;
-`
 
 
 function App() {
@@ -81,12 +71,14 @@ function App() {
 
 return (
     <Backdrop>
+        <SelectRoom/>
 
-        {/*<VideoDiv>*/}
-        {/*    <Video ref={currentUserVideoRef}/>*/}
-        {/*    <Video ref={remoteVideoRef}/>*/}
-        {/*</VideoDiv>*/}
-        {/*<button onClick={() => call(remotePeerIdValue)}>Call</button>*/}
+        {/*<div*/}
+        {/*>*/}
+        {/*    <video ref={currentUserVideoRef}/>*/}
+        {/*    <video ref={remoteVideoRef}/>*/}
+        {/*</div>*/}
+        {/*<button onClick={() => call("abc")}>Call</button>*/}
         {/*<h1>Current user id is {peerId}</h1>*/}
         {/*<input*/}
         {/*    type={"text"}*/}

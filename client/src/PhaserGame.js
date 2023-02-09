@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import Boot from "./scenes/Boot";
 import Game from "./scenes/Game";
+import Loading from "./scenes/Loading";
 
 const config = {
     type: Phaser.AUTO,
@@ -20,7 +21,7 @@ const config = {
         },
     },
     autoFocus: true,
-    scene: [Boot, Game],
+    scene: [Loading, Boot, Game],
 };
 const phaserGame = new Phaser.Game(config);
 (window).game = phaserGame;
