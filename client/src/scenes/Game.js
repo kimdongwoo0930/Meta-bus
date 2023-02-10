@@ -26,10 +26,12 @@ export default class Game extends Phaser.Scene {
        }else{
        }
         this.cursors = this.input.keyboard.createCursorKeys();
+       this.socket.emit("JoinRoom",{ RoomId : "public"})
+        this.socket.emit("otherPlayer");
+       this.socket.emit("JoinNew")
     }
 
     create() {
-        this.WebRtc = new Web("123")
         createCharacterAnims(this.anims);
 
         this.socket.on("connects", ({ otherPlayer }) => {
