@@ -1,7 +1,5 @@
 import Phaser from "phaser";
 import { createCharacterAnims } from "../anims/CharacterAnims";
-import { io, Socket } from "socket.io-client";
-import Web from "../service/Web";
 
 
 export default class Game extends Phaser.Scene {
@@ -10,9 +8,10 @@ export default class Game extends Phaser.Scene {
     socket
     otherPlayers= {}
 
-    LOCAL_DOMAINS = ["localhost","192.168.0.140",""]
+    roomId
 
-    WebRtc
+    network
+
 
     constructor() {
         super("Game");
@@ -21,22 +20,24 @@ export default class Game extends Phaser.Scene {
 
 
     preload() {
-       if(this.LOCAL_DOMAINS.includes(window.location.hostname)){
-           this.socket = io("192.168.0.140:3000");
-       }else{
-       }
         this.cursors = this.input.keyboard.createCursorKeys();
-       this.socket.emit("JoinRoom",{ RoomId : "public"})
-        this.socket.emit("otherPlayer");
-       this.socket.emit("JoinNew")
     }
 
-    create() {
+    create(data) {
+       console.log(data)
+        this.socket = data.socket
+        this.roomId = data.roomId
+        this.network = this.socket.socket
+        this.socket.JoinTheRoom(this.roomId)
+        this.socket.Connected()
+
+
         createCharacterAnims(this.anims);
 
-        this.socket.on("connects", ({ otherPlayer }) => {
+
+        this.network.on("connects", ({ otherPlayer }) => {
             Object.keys(otherPlayer).map((Id) => {
-                if (Id !== this.socket.id) {
+                if (Id !== this.network.id) {
                     this.otherPlayers[Id] = this.physics.add.sprite(
                         otherPlayer[Id]?.x,
                         otherPlayer[Id]?.y,
@@ -48,7 +49,7 @@ export default class Game extends Phaser.Scene {
             });
         });
 
-        this.socket.on("connection", ({ id, x, y }) => {
+        this.network.on("connection", ({ id, x, y }) => {
             this.otherPlayers[id] = this.physics.add.sprite(x, y, "otherPlayer");
         });
 
@@ -66,7 +67,7 @@ export default class Game extends Phaser.Scene {
         this.cameras.main.zoom = 2;
         this.cameras.main.startFollow(this.player, true);
 
-        this.socket.on("move", ({ socketId, x, y, direction }) => {
+        this.network.on("move", ({ socketId, x, y, direction }) => {
             // console.log(socketId, x, y);
             const play = this.otherPlayers[socketId];
             play.x = x;
@@ -74,11 +75,11 @@ export default class Game extends Phaser.Scene {
             play.anims.play(direction, true);
         });
 
-        this.socket.on("moveEnd", ({ socketId }) => {
+        this.network.on("moveEnd", ({ socketId }) => {
             this.otherPlayers[socketId]?.anims.stop();
         });
 
-        this.socket.on("delete", (Id) => {
+        this.network.on("delete", (Id) => {
             this.otherPlayers[Id].destroy();
         });
     }
@@ -91,43 +92,48 @@ export default class Game extends Phaser.Scene {
         if (this.cursors.left?.isDown) {
             this.player.anims.play("left", true);
             this.player.setVelocity(-speed, 0);
-            this.socket.emit("move", {
-                socketId: this.socket.id,
+            this.network.emit("move", {
+                socketId: this.network.id,
                 x: this.player.x,
                 y: this.player.y,
                 direction: "left",
+                RoomId : this.roomId
             });
         } else if (this.cursors.right?.isDown) {
             this.player.anims.play("right", true);
             this.player.setVelocity(speed, 0);
-            this.socket.emit("move", {
-                socketId: this.socket.id,
+            this.network.emit("move", {
+                socketId: this.network.id,
                 x: this.player.x,
                 y: this.player.y,
                 direction: "right",
+                RoomId : this.roomId
             });
         } else if (this.cursors.up?.isDown) {
             this.player.anims.play("up", true);
             this.player.setVelocity(0, -speed);
-            this.socket.emit("move", {
-                socketId: this.socket.id,
+            this.network.emit("move", {
+                socketId: this.network.id,
                 x: this.player.x,
                 y: this.player.y,
                 direction: "up",
+                RoomId : this.roomId
             });
         } else if (this.cursors.down?.isDown) {
             this.player.anims.play("down", true);
             this.player.setVelocity(0, speed);
-            this.socket.emit("move", {
-                socketId: this.socket.id,
+            this.network.emit("move", {
+                socketId: this.network.id,
                 x: this.player.x,
                 y: this.player.y,
                 direction: "down",
+                RoomId : this.roomId
+
             });
         } else {
             this.player.anims.stop();
             this.player.setVelocity(0, 0);
-            this.socket.emit("moveEnd", { socketId: this.socket.id });
+            this.network.emit("moveEnd", { socketId: this.network.id, RoomId : this.roomId });
         }
 
         //console.log(this.player.x, this.player.y);

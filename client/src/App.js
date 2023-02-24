@@ -5,6 +5,7 @@ import Peer from "peerjs";
 
 import Videos from "./components/Videos"
 import SelectRoom from "./components/SelectRoom";
+import Socket from "./service/Socket";
 
 const Backdrop = styled.div`
   position: absolute;
@@ -13,7 +14,10 @@ const Backdrop = styled.div`
 `;
 
 
+
+
 function App() {
+
     // const [peerId, setPeerId] = useState(null);
     // const [remotePeerIdValue, setRemotePeerIdValue] = useState(null);
     // const remoteVideoRef = useRef(null);
@@ -71,7 +75,7 @@ function App() {
 
 return (
     <Backdrop>
-        <SelectRoom/>
+        <SelectRoom socket={Socket}/>
 
         {/*<div*/}
         {/*>*/}

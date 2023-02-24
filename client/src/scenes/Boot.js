@@ -1,14 +1,17 @@
 
 import Phaser from "phaser";
+import Socket from "../service/Socket";
 
 export default class Boot extends Phaser.Scene {
 
     preloadComplete = false
+    socket
     constructor() {
         super("boot");
 
     }
     preload() {
+        this.socket = new Socket();
         console.log("OK")
         this.load.image("tiles", "assets/tiles/Tiles.png");
         this.load.tilemapTiledJSON("map", "assets/Map/tiles.json");
@@ -26,9 +29,11 @@ export default class Boot extends Phaser.Scene {
         })
     }
 
-    create(){
+    create(data){
+        console.log(data)
         if(!this.preloadComplete) return
-        this.scene.start('Game');
+        this.scene.launch('Game',{socket : this.socket, roomId : data.RoomId})
+        console.log(this.socket)
     }
 
 

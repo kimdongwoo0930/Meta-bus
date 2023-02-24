@@ -49,12 +49,23 @@ export default () => {
 
 
 
-    const Handle = () => {
-        if(!RoomJoin) {
+    const Join = () => {
+        // if(!RoomId === "") {
+            if (!RoomJoin) {
+                const boot = PhaserGame.scene.keys.boot
+                boot.scene.start('boot', {RoomId : RoomId})
+                setRoomJoin(true)
+            }
+        // }
+    }
+    const JoinPublic = () => {
+        // if(!RoomId === "") {
+        if (!RoomJoin) {
             const boot = PhaserGame.scene.keys.boot
-            boot.scene.start();
+            boot.scene.start('boot', {RoomId : 'public'})
             setRoomJoin(true)
         }
+        // }
     }
 
 
@@ -72,8 +83,8 @@ export default () => {
                     onChange={(e) => setRoomId(e.target.value)}
                 />
                 <div style={{ width : "100%", alignItems : 'center', justifyItems : "center", flexDirection : 'row' }}>
-                    <JoinButton onClick={Handle}>방에 참가하기</JoinButton>
-                    <JoinButton>방 만들기</JoinButton>
+                    <JoinButton onClick={Join}>이름으로 참가</JoinButton>
+                    <JoinButton onClick={JoinPublic}>public 참가</JoinButton>
                 </div>
             </Wrapper>
         </BackDrop>) : (<></>)
