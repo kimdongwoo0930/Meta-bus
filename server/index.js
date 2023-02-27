@@ -80,6 +80,7 @@ io.on("connection", (socket) => {
     // 접속을 종료했을때 유저 데이터에서 삭제하기 위해 전송및 데이터 삭제
     socket.on("disconnect", () => {
         console.log("disconnect");
+        // 만약 이 소켓 유저가 플레이어 리스트안에 있다면 방에서도 나가고, 소켓에서도 나가고, 리스트에서도 제거한후 다른 유저에게 퇴장메세지를 보낸다.
         if(socket.id in PlayerList){
             socket.broadcast.to(PlayerList[socket.id].roomId).emit("delete", socket.id);
             socket.leave(PlayerList[socket.id].roomId)
