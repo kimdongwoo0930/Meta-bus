@@ -5,6 +5,11 @@ export const countState = atom({
     default: 0 // 초깃값
 });
 
+export const socket = atom({
+    key : "socket",
+    default : undefined
+})
+
 export const SelectRoomState = atom({
     key : "SelectRoomState",
     default : true

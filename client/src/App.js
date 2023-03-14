@@ -1,13 +1,10 @@
 import React , { useEffect, useState, useRef}from "react";
 import "./App.css";
 import styled from "styled-components";
-import Peer from "peerjs";
-
-import Videos from "./components/Videos"
-import Socket from "./service/Socket";
 import {useRecoilState} from "recoil";
 import {SelectRoomState} from "./redux/atoms";
 import SelectRoom from "./components/SelectRoom";
+import { SocketContext, socket } from "./service/Network";
 
 const Backdrop = styled.div`
   position: absolute;
@@ -28,6 +25,7 @@ function App() {
     const [selectRoom,setSelectRoom] = useRecoilState(SelectRoomState)
 
 
+
     if(selectRoom){
         ui = <SelectRoom/>
     }
@@ -35,6 +33,7 @@ function App() {
         ui = <></>
     }
 return (
+    <SocketContext.Provider value={socket}>
     <Backdrop>
         {ui}
 
@@ -51,6 +50,7 @@ return (
         {/*    onChange={(e) => setRemotePeerIdValue(e.target.value)}*/}
         {/*/>*/}
     </Backdrop>
+    </SocketContext.Provider>
 );
 }
 

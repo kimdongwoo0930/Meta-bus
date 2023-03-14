@@ -1,11 +1,13 @@
 import styled from "styled-components";
-import {useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import PhaserGame from "../PhaserGame";
 import Boot from "../scenes/Boot"
 import RoomList from "./RoomList";
 import item from "./data.json";
 import {useRecoilState, useSetRecoilState} from "recoil";
-import {SelectRoomState} from "../redux/atoms";
+import {SelectRoomState, socket} from "../redux/atoms";
+import Socket from "../service/Socket";
+import {SocketContext} from "../service/Network";
 
 
 const Wrapper = styled.div`
@@ -40,35 +42,20 @@ const JoinButton = styled.button`
 export default () => {
     const [selectRoom,setSelectRoom] = useRecoilState(SelectRoomState)
 
+    const socket = useContext(SocketContext)
 
     const [RoomId,setRoomId] = useState("");
     const [RoomJoin,setRoomJoin] = useState(false);
     const [RoomLists,setRoomLists] = useState(false);
 
 
-
-
-    const Join = () => {
-        // if(!RoomId === "") {
-            if (!RoomJoin) {
-                const boot = PhaserGame.scene.keys.boot
-                boot.scene.start('boot', {RoomId : RoomId})
-                setSelectRoom(false)
-            }
-        // }
-    }
     const JoinPublic = () => {
-        // if(!RoomId === "") {
         if (!RoomJoin) {
             const boot = PhaserGame.scene.keys.boot
-            boot.scene.start('boot', {RoomId : 'public'})
+            boot.scene.start('boot', {RoomId : 'public', socket : socket})
             setSelectRoom(false)
         }
-        // }
     }
-
-
-
 
 
 
@@ -89,7 +76,7 @@ export default () => {
                     <TitleWrapper>
                         <h1>방 목록</h1>
                     </TitleWrapper>
-                    <RoomList />
+                    <RoomList/>
 
         </Wrapper>
         ) : (<></>)

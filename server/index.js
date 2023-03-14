@@ -99,7 +99,7 @@ io.on("connection", (socket) => {
     // 캐릭터가 움직임을 멈췄을때 알리기 위한 정보
     socket.on("moveEnd", ({socketId, RoomId}) => {
         // TODO : 방단위로 구별하여 보내줘야한다.
-        socket.broadcast.to(RoomId).emit("moveEnd", {socketId});
+        socket.broadcast.to(RoomId).emit("moveEnd", {socketId : socketId});
     });
 
 
@@ -107,17 +107,27 @@ io.on("connection", (socket) => {
     // 방 목록
     // TODO : 방 목록 전송해주기
     socket.on("RoomList",() => {
-        const RoomSizes = []
+        const RoomSizes = {}
         Room.map((item) => {
-            RoomSizes.push(RoomSize(item))
+            if( RoomSize(item) === undefined) {
+                RoomSizes[item] = 0
+            }
+            else{
+                RoomSizes[item] = RoomSize(item)
+            }
         })
-        socket.emit("RoomListReturn",{ RoomList : Room, RoomSize : RoomSizes})
+        socket.emit("RoomListReturn",{ RoomList : Room, RoomSize : RoomSizes })
     })
     // 방을 생성했을 경우 다른 플레이어들에게 실시간으로 보내줘서 새로고침을 한다.
     socket.on("CreateRoom",()=>{
-        const RoomSizes = []
+        const RoomSizes = {}
         Room.map((item) => {
-            RoomSizes.push(RoomSize(item))
+            if( RoomSize(item) === undefined) {
+                RoomSizes[item] = 0
+            }
+            else{
+                RoomSizes[item] = RoomSize(item)
+            }
         })
         socket.broadcast.to("Lobby").emit("CreateRoomReturn",{ RoomList : Room, RoomSize : RoomSizes })
     })

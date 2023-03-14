@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import item from "./data.json";
 import PhaserGame from "../PhaserGame";
-import {useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {useRecoilState} from "recoil";
+
+import {SocketContext} from "../service/Network";
 import {SelectRoomState} from "../redux/atoms";
 
 
@@ -40,12 +41,12 @@ const RoomLists = styled.div`
   }
 `
 
-const RoomList = ({RoomId, Member,setState}) => {
+const RoomList = ({RoomId, Member,setState, socket}) => {
 
     const Join = () => {
         // if(!RoomId === "") {
         const boot = PhaserGame.scene.keys.boot
-        boot.scene.start('boot', {RoomId : RoomId})
+        boot.scene.start('boot', {RoomId : RoomId, socket : socket})
         setState(false)
     }
     // }
@@ -59,15 +60,33 @@ const RoomList = ({RoomId, Member,setState}) => {
 }
 
 export default () => {
+    const socket = useContext(SocketContext)
+
     const [selectRoom,setSelectRoom] = useRecoilState(SelectRoomState)
+    const [Rooms, setRooms] = useState([])
+    const [roomSize, setRoomSize] = useState({})
+    const [roomList, setRoomList] = useState([])
+    const [connect,setConnect] = useState(false)
+
+
+    useEffect(()=>{
+        socket.emit("RoomList")
+        socket.on("RoomListReturn",({ RoomSizes }) => {
+            setRoomSize(RoomSizes)
+        })
+        socket.on("RoomListRefresh",({RoomSizes}) => {
+            setRoomSize(RoomSizes)
+        })
+    },[socket])
+
 
 
     return(
 
         <RoomLists>
-        {item.data.map((Item) => {
+            {Object.entries(roomSize).map(([key,value]) => {
                 return(
-                    <RoomList RoomId={Item.RoomId} Member={Item.Member} setState={setSelectRoom}/>
+                    <RoomList RoomId={key} Member={value} setState={setSelectRoom} socket={socket}/>
                 );
             })}
         </RoomLists>
