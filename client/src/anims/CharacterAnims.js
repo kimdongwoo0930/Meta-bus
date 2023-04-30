@@ -1,5 +1,3 @@
-import Phaser from "phaser";
-
 export const createCharacterAnims = (anims) => {
     const animsFrameRate = 15;
 

@@ -1,55 +1,43 @@
-import React , { useEffect, useState, useRef}from "react";
-import "./App.css";
+import React from "react";
 import styled from "styled-components";
-import {useRecoilState} from "recoil";
-import {SelectRoomState} from "./redux/atoms";
-import SelectRoom from "./components/SelectRoom";
 import { SocketContext, socket } from "./service/Network";
+import InGame from "./components/InGame";
+import Main from "./components/Main";
+import RoomListScreen from "./components/RoomList";
+import CreateRoom from "./components/CreateRoom"
+import { useSelector } from "react-redux";
 
 const Backdrop = styled.div`
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  gap: 60px;
-  align-items: center;
+  width: 100%;
+  height : 100%;
 `
-
-
 
 
 function App() {
     let ui
-    const [selectRoom,setSelectRoom] = useRecoilState(SelectRoomState)
+    const JoinGame = useSelector(state => state.roomState.joinGame)
+    const RoomList = useSelector(state => state.roomState.roomList)
+    const Create = useSelector(state => state.roomState.createRoom)
 
-
-
-    if(selectRoom){
-        ui = <SelectRoom/>
+    if(!JoinGame){
+        ui = <Main/>
+    }
+    else if(!RoomList){
+        ui = <RoomListScreen/>
+    }
+    else if(!Create){
+        ui = <CreateRoom/>
     }
     else{
-        ui = <></>
+        ui = <InGame/>
     }
+    
 return (
     <SocketContext.Provider value={socket}>
-    <Backdrop>
-        {ui}
-
-        {/*<div*/}
-        {/*>*/}
-        {/*    <video ref={currentUserVideoRef}/>*/}
-        {/*    <video ref={remoteVideoRef}/>*/}
-        {/*</div>*/}
-        {/*<button onClick={() => call("abc")}>Call</button>*/}
-        {/*<h1>Current user id is {peerId}</h1>*/}
-        {/*<input*/}
-        {/*    type={"text"}*/}
-        {/*    value={remotePeerIdValue}*/}
-        {/*    onChange={(e) => setRemotePeerIdValue(e.target.value)}*/}
-        {/*/>*/}
-    </Backdrop>
+        <Backdrop>
+            {ui}
+        </Backdrop>
     </SocketContext.Provider>
 );
 }

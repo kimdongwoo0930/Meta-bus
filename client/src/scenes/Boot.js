@@ -1,19 +1,17 @@
-
 import Phaser from "phaser";
-import Socket from "../service/Socket";
+
 
 export default class Boot extends Phaser.Scene {
 
     preloadComplete = false
-    socket
     constructor() {
         super("boot");
 
     }
     preload() {
-        console.log("OK")
         this.load.image("tiles", "assets/tiles/Tiles.png");
         this.load.tilemapTiledJSON("map", "assets/Map/tiles.json");
+
 
         this.load.spritesheet("player", "/assets/player.png", {
             frameHeight: 32,
@@ -25,15 +23,12 @@ export default class Boot extends Phaser.Scene {
         });
         this.load.on('complete',() => {
             this.preloadComplete = true
+            console.log("게임 로딩 완료")
         })
     }
 
     create(data){
-        console.log(data)
         if(!this.preloadComplete) return
-        this.scene.launch('Game',{socket : data.socket, roomId : data.RoomId})
-        console.log(data.socket)
+        this.scene.launch('Game',{socket : data.socket, roomId : data.RoomId, nickname : data.nickname })
     }
-
-
 }
